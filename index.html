@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/weather-icons/2.0.10/css/weather-icons.min.css">
+    <title>Document</title>
+</head>
+<body>
+<div class="card">
+    <div class="search">
+        <input type="text" placeholder="Search for a city...", spellcheck="false" style="opacity: 0.7;">
+        <button><img src="images/search.png"></button>
+    </div>
+    <div>
+        <div class="error">
+            <p>Not Found</p>
+        </div>
+    </div>
+    <div class="weather">
+        <i id="weather-icon" class="wi" style="font-size: 95px;"></i>
+        <h1 class="temp">30°C</h1>
+        <h2 class="city">Nassau</h2>
+        <h4 class="description"></h4>
+        <h5 class="hi-lo"></h5>
+        <!-- Details -->
+        <div class="details">
+            <div class="col">
+                <i class="wi wi-humidity"></i>
+                <div>
+                    <p class="humidity">50%</p>
+                    <p>Humidity</p>
+                </div>
+            </div>
+
+            <div class="col">
+                <i class="wi wi-strong-wind"></i>
+                <div>
+                    <p class="wind">50%</p>
+                    <p>Wind Speed</p>
+                </div>
+            </div>
+        </div>
+        <!-- Second row -->
+        <div class="details">
+            <div class="col">
+                <i class="wi wi-barometer"></i>
+                <div>
+                    <p class="pressure">1015 hPa</p>
+                    <p>Pressure</p>
+                </div>
+            </div>
+
+            <div class="col">
+                <!-- cloudiness -->
+                <i class="wi wi-cloudy"></i>
+                <div>
+                    <p class="cloudiness">75%</p>
+                    <p>Cloudiness</p>
+                </div>
+            </div>
+        </div>
+        <!-- Third row -->
+        <div class="details">
+            <div class="col">
+                <i class="wi wi-sunrise"></i>
+                <div>
+                    <p class="sunrise">6:00 AM</p>
+                    <p>Sunrise</p>
+                </div>
+            </div>
+
+            <div class="col">
+                <i class="wi wi-sunset"></i>
+                <div>
+                    <p class="sunset">7:45 PM</p>
+                    <p>Sunset</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Javascript -->
+<script>
+    const key = YOUR_API_KEY; // Replace with your OpenWeatherMap API key
+    const url = "https://api.openweathermap.org/data/2.5/weather?units=metric&q="
+
+    const iconMap = {
+        "01d": "wi-day-sunny",
+        "01n": "wi-night-clear",
+        "02d": "wi-day-cloudy",
+        "02n": "wi-night-alt-cloudy",
+        "03d": "wi-cloud",
+        "03n": "wi-cloud",
+        "04d": "wi-cloudy",
+        "04n": "wi-cloudy",
+        "09d": "wi-showers",
+        "09n": "wi-showers",
+        "10d": "wi-day-rain",
+        "10n": "wi-night-alt-rain",
+        "11d": "wi-thunderstorm",
+        "11n": "wi-thunderstorm",
+        "13d": "wi-snow",
+        "13n": "wi-snow",
+        "50d": "wi-fog",
+        "50n": "wi-fog"
+    };
+
+    const searchBox = document.querySelector(".search input");
+    const searchBtn = document.querySelector(".search button");
+
+    async function checkWeather(city){
+        // Fetch the weather data from the API
+        const response = await fetch(`${url}${city}&appid=${key}`); 
+
+        if (response.status == 404) { // Check if the response is not OK (e.g., city not found)
+            document.querySelector(".error").style.display = "block"; // Show error message
+            document.querySelector(".weather").style.display = "block"; // Hide weather section
+        } 
+        else {
+            var data = await response.json();
+    
+            // Getting icon codes to update the weather icon
+            const iconCode = data.weather[0].icon;
+            const description = data.weather[0].description;
+            const iconClass = iconMap[iconCode] || "wi-na"; // Default to 'not available' icon if not found
+
+            document.querySelector(".description").innerHTML = description.charAt(0).toUpperCase() + description.slice(1); // Capitalize first letter
+            document.getElementById("weather-icon").className = "wi"; // Reset previous icon classes
+
+            // high and low temperatures
+            document.querySelector(".hi-lo").innerHTML = `H: ${Math.round(data.main.temp_max)}°        L: ${Math.round(data.main.temp_min)}°`;
+
+            document.getElementById("weather-icon").classList.add(iconClass);
+
+            // Update the HTML with the fetched data (temperature, city, humidity, wind speed)
+            document.querySelector(".city").innerHTML = data.name;
+            document.querySelector(".temp").innerHTML = Math.round(data.main.temp) + "°";
+            document.querySelector(".humidity").innerHTML = data.main.humidity + "%";
+            document.querySelector(".wind").innerHTML = data.wind.speed + "km/h";
+    
+            document.querySelector(".weather").style.display = "block"; // Make the weather section visible
+            document.querySelector(".error").style.display = "none"; // Hide the error message
+        }
+    }
+
+    searchBtn.addEventListener("click", ()=>{ checkWeather(searchBox.value); }); // search for the city when the button is clicked
+    searchBox.addEventListener("keyup", (event) => { // allows searching by pressing the Enter key
+        if (event.key == "Enter") { // check for the Enter key
+            checkWeather(searchBox.value); // search for the city when Enter is pressed
+        }
+    });
+
+    checkWeather(); // Call the function to fetch and display the weather data
+
+</script>
+</body>
+</html>
