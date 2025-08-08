@@ -1,4 +1,4 @@
-const key = "aa06c0ee205a674f1a9d85a6b97568cd"; // Replace with your OpenWeatherMap API key
+const key = YOUR_KEY_HERE; // Replace with your OpenWeatherMap API key
 const url = "https://api.openweathermap.org/data/2.5/weather?units=metric&q="
 
 const iconMap = {
@@ -66,5 +66,6 @@ searchBox.addEventListener("keyup", (event) => { // allows searching by pressing
         checkWeather(searchBox.value); // search for the city when Enter is pressed
     }
 });
+
 
 checkWeather(); // Call the function to fetch and display the weather data
