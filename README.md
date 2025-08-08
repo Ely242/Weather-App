@@ -34,7 +34,7 @@ git clone https://github.com/yourusername/weather-app.git
 cd weather-app
 ```
 3. Open `index.html` in your browser.
-4. Replace the `key` variable in the `<script>` tag with your own OpenWeatherMap API key.
+4. Replace the `key` variable in the `index.js` file (at the top) with your own OpenWeatherMap API key.
 
 ## Usage
 - Enter the name of a city in the search box.
