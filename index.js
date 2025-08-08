@@ -67,5 +67,4 @@ searchBox.addEventListener("keyup", (event) => { // allows searching by pressing
     }
 });
 
-
 checkWeather(); // Call the function to fetch and display the weather data
